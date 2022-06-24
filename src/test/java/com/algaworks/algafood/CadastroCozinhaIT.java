@@ -2,6 +2,7 @@ package com.algaworks.algafood;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.equalTo;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,7 +66,7 @@ public class CadastroCozinhaIT {
 	}
 	
 	@Test
-	public void testRetornarStatus201_QuandoCadastrarCozinha() {
+	public void deveRetornarStatus201_QuandoCadastrarCozinha() {
 		given()
 			.body("{ \"nome\": \"Chinesa\" }")
 			.contentType(ContentType.JSON)
@@ -74,6 +75,29 @@ public class CadastroCozinhaIT {
 			.post()
 		.then()
 			.statusCode(HttpStatus.CREATED.value());
+	}
+	
+	@Test
+	public void deveRetornarRespostaEStatusCorretos_QuandoConsultarCozinhaExistente() {
+		given()
+			.pathParam("cozinhaId", 2)
+			.accept(ContentType.JSON)
+		.when()
+			.get("/{cozinhaId}")
+		.then()
+			.statusCode(HttpStatus.OK.value())
+			.body("nome", equalTo("Americana"));
+	}
+	
+	@Test
+	public void deveRetornarStatus404_QuandoConsultarCozinhaInexistente() {
+		given()
+			.pathParam("cozinhaId", 100)
+			.accept(ContentType.JSON)
+		.when()
+			.get("/{cozinhaId}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
 	}
 	
 	private void prepararDados() {
