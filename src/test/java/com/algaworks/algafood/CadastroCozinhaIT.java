@@ -3,6 +3,7 @@ package com.algaworks.algafood;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasSize;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,17 +17,20 @@ import io.restassured.http.ContentType;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CadastroCozinhaIT {
-
+	
 	@LocalServerPort
 	private int port;
 	
+	@BeforeEach
+	public void setUp() {
+		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+		RestAssured.port = port;
+		RestAssured.basePath = "/cozinhas";
+	}
+	
 	@Test
 	public void deveRetornarStatus200_QuandoConsultarCozinhas() {
-		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-		
 		given()
-			.basePath("/cozinhas")
-			.port(port)
 			.accept(ContentType.JSON)
 		.when()
 			.get()
@@ -36,17 +40,12 @@ public class CadastroCozinhaIT {
 	
 	@Test
 	public void deveConter4Cozinhas_QuandoConsultarCozinhas() {
-		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-		
 		given()
-			.basePath("/cozinhas")
-			.port(port)
-			.accept(ContentType.JSON)
+		.accept(ContentType.JSON)
 		.when()
 			.get()
 		.then()
 			.body("", hasSize(4));
-//			.body("nome", hasItems("Indiana", "Tailandesa"));
 	}
 
 }
