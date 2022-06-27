@@ -3,5 +3,14 @@
 	"taxaFrete": 12,
 	"cozinha": {
 		"id": 200
+	},
+	"endereco": {
+		"numero": "123",
+        "cep": "12345-678",
+        "bairro": "Teste",
+        "logradouro": "Rua Teste",
+        "cidade": {
+            "id": 1
+        }
 	}
 }
