@@ -15,9 +15,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
+import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.util.DatabaseCleaner;
 import com.algaworks.algafood.util.ResourceUtils;
@@ -42,6 +46,12 @@ public class CadastroRestauranteIT {
 	@Autowired
 	private DatabaseCleaner databaseCleaner;
 
+	@Autowired
+	private EstadoRepository estadoRepository;
+	
+	@Autowired
+	private CidadeRepository cidadeRepository;
+	
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
 
@@ -161,6 +171,15 @@ public class CadastroRestauranteIT {
 	}
 
 	private void prepararDados() {
+		Estado pernambuco = new Estado();
+		pernambuco.setNome("Pernambuco");
+		estadoRepository.save(pernambuco);
+		
+		Cidade petrolina = new Cidade();
+		petrolina.setNome("Petrolina");
+		petrolina.setEstado(pernambuco);
+		cidadeRepository.save(petrolina);
+		
 		Cozinha cozinhaBrasileira = new Cozinha();
 		cozinhaBrasileira.setNome("Brasileira");
 		cozinhaRepository.save(cozinhaBrasileira);
