@@ -8,7 +8,6 @@ import org.springframework.util.FileCopyUtils;
 
 import com.algaworks.algafood.domain.service.FotoStorageService;
 
-//@Service
 public class LocalFotoStorageService implements FotoStorageService {
 
 	@Value("${algafood.storage.local.diretorio-fotos}")
