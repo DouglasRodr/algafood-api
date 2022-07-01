@@ -21,6 +21,14 @@ import io.swagger.annotations.ApiResponses;
 public interface PedidoControllerOpenApi {
 
     @ApiImplicitParams({
+    	@ApiImplicitParam(name = "clienteId", value = "ID do cliente para filtro da pesquisa",
+				example = "1", dataType = "int"),
+    	@ApiImplicitParam(name = "restauranteId", value = "ID do restaurante para filtro da pesquisa",
+				example = "1", dataType = "int"),
+    	@ApiImplicitParam(name = "dataCriacaoInicio", value = "Data/hora de criação inicial para filtro da pesquisa",
+			example = "2019-10-30T00:00:00Z", dataType = "date-time"),
+    	@ApiImplicitParam(name = "dataCriacaoFim", value = "Data/hora de criação final para filtro da pesquisa",
+			example = "2019-11-01T10:00:00Z", dataType = "date-time"),
         @ApiImplicitParam(value = "Nomes das propriedades para filtrar na resposta, separados por vírgula",
                 name = "campos", paramType = "query", type = "string")
     })
