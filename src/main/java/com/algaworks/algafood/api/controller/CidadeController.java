@@ -8,6 +8,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,13 +49,32 @@ public class CidadeController implements CidadeControllerOpenApi {
 	@Autowired
 	private CidadeInputDisassembler cidadeInputDisassembler;
 
+	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<CidadeModel> listar() {
+	public CollectionModel<CidadeModel> listar() {
 		List<Cidade> todasCidades = cidadeRepository.findAll();
-
-		return cidadeModelAssembler.toCollectionModel(todasCidades);
+		
+		List<CidadeModel> cidadesModel = cidadeModelAssembler.toCollectionModel(todasCidades);
+		
+		cidadesModel.forEach(cidadeModel -> {
+			cidadeModel.add(linkTo(methodOn(CidadeController.class)
+					.buscar(cidadeModel.getId())).withSelfRel());
+			
+			cidadeModel.add(linkTo(methodOn(CidadeController.class)
+					.listar()).withRel("cidades"));
+			
+			cidadeModel.getEstado().add(linkTo(methodOn(EstadoController.class)
+					.buscar(cidadeModel.getEstado().getId())).withSelfRel());
+		});
+		
+		CollectionModel<CidadeModel> cidadesCollectionModel = CollectionModel.of(cidadesModel);
+		
+		cidadesCollectionModel.add(linkTo(CidadeController.class).withSelfRel());
+		
+		return cidadesCollectionModel;
 	}
 
+	@Override
 	@GetMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeModel buscar(@PathVariable Long cidadeId) {
 		Cidade cidade = cadastroCidade.buscarOuFalhar(cidadeId);
@@ -82,6 +102,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 		return cidadeModel;
 	}
 
+	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeModel adicionar(@RequestBody @Valid CidadeInput cidadeInput) {
@@ -100,6 +121,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 		}
 	}
 
+	@Override
 	@PutMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeModel atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInput cidadeInput) {
 		try {
@@ -115,6 +137,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 		}
 	}
 
+	@Override
 	@DeleteMapping("/{cidadeId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long cidadeId) {
