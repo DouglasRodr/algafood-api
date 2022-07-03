@@ -1,11 +1,12 @@
 package com.algaworks.algafood.api.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,17 +57,22 @@ public class CidadeController implements CidadeControllerOpenApi {
 	@GetMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeModel buscar(@PathVariable Long cidadeId) {
 		Cidade cidade = cadastroCidade.buscarOuFalhar(cidadeId);
-		
+
 		CidadeModel cidadeModel = cidadeModelAssembler.toModel(cidade);
-		
-		cidadeModel.add(Link.of("http://localhost:8080/cidades/1"));
-//		cidadeModel.add(Link.of("http://localhost:8080/cidades/1", IanaLinkRelations.SELF));
-		
-		cidadeModel.add(Link.of("http://localhost:8080/cidades", "cidades"));
-//		cidadeModel.add(Link.of("http://localhost:8080/cidades", IanaLinkRelations.COLLECTION));
-		
-		cidadeModel.getEstado().add(Link.of("http://localhost:8080/estados/1"));
-		
+
+		cidadeModel.add(linkTo(CidadeController.class).slash(cidadeModel.getId()).withSelfRel());
+
+//		cidadeModel.add(new Link("http://api.algafood.local:8080/cidades/1"));
+
+		cidadeModel.add(linkTo(CidadeController.class).withRel("cidades"));
+
+//		cidadeModel.add(new Link("http://api.algafood.local:8080/cidades", "cidades"));
+
+		cidadeModel.getEstado().add(linkTo(EstadoController.class)
+				.slash(cidadeModel.getEstado().getId()).withSelfRel());
+
+//		cidadeModel.getEstado().add(new Link("http://api.algafood.local:8080/estados/1"));
+
 		return cidadeModel;
 	}
 
@@ -75,13 +81,13 @@ public class CidadeController implements CidadeControllerOpenApi {
 	public CidadeModel adicionar(@RequestBody @Valid CidadeInput cidadeInput) {
 		try {
 			Cidade cidade = cidadeInputDisassembler.toDomainObject(cidadeInput);
-			
+
 			cidade = cadastroCidade.salvar(cidade);
-			
+
 			CidadeModel cidadeModel = cidadeModelAssembler.toModel(cidade);
-			
+
 			ResourceUriHelper.addUriInResponseHeader(cidadeModel.getId());
-			
+
 			return cidadeModel;
 		} catch (EstadoNaoEncontradoException e) {
 			throw new NegocioException(e.getMessage(), e);
