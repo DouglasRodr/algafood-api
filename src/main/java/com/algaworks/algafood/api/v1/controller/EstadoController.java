@@ -28,7 +28,7 @@ import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
 
 @RestController
-@RequestMapping("/estados")
+@RequestMapping(path = "/v1/estados")
 public class EstadoController implements EstadoControllerOpenApi {
 
 	@Autowired

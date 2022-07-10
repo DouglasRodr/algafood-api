@@ -29,7 +29,7 @@ import com.algaworks.algafood.domain.repository.UsuarioRepository;
 import com.algaworks.algafood.domain.service.CadastroUsuarioService;
 
 @RestController
-@RequestMapping(value = "/usuarios")
+@RequestMapping(path = "/v1/usuarios")
 public class UsuarioController implements UsuarioControllerOpenApi {
 
 	@Autowired
