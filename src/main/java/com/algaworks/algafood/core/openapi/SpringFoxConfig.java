@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Links;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -73,9 +74,9 @@ public class SpringFoxConfig {
 	                    File.class, InputStream.class)
 	            .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
 	            .directModelSubstitute(Links.class, LinksModelOpenApi.class)
-	            .alternateTypeRules(AlternateTypeRules.newRule(
-	                    typeResolver.resolve(Page.class, CozinhaModel.class),
-	                    CozinhasModelOpenApi.class))
+				.alternateTypeRules(AlternateTypeRules.newRule(
+						typeResolver.resolve(PagedModel.class, CozinhaModel.class),
+						CozinhasModelOpenApi.class))
 	            .alternateTypeRules(AlternateTypeRules.newRule(
 	                    typeResolver.resolve(Page.class, PedidoResumoModel.class),
 	                    PedidosResumoModelOpenApi.class))
