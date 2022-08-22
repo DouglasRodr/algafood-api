@@ -79,6 +79,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 		return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelAssembler);
 	}
 
+	@CheckSecurity.Pedidos.PodeBuscar
 	@Override
 	@GetMapping("/{codigoPedido}")
 	public PedidoModel buscar(@PathVariable String codigoPedido) {
@@ -87,6 +88,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 		return pedidoModelAssembler.toModel(pedido);
 	}
 
+	@CheckSecurity.Pedidos.PodeCriar
 	@Override
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
