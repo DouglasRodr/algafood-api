@@ -19,7 +19,7 @@ public class PedidoModelAssembler extends RepresentationModelAssemblerSupport<Pe
 
 	@Autowired
 	private AlgaLinks algaLinks;
-	
+
 	@Autowired
 	private AlgaSecurity algaSecurity;
 
@@ -29,43 +29,51 @@ public class PedidoModelAssembler extends RepresentationModelAssemblerSupport<Pe
 
 	@Override
 	public PedidoModel toModel(Pedido pedido) {
-	    PedidoModel pedidoModel = createModelWithId(pedido.getCodigo(), pedido);
-	    modelMapper.map(pedido, pedidoModel);
-	    
-	    pedidoModel.add(algaLinks.linkToPedidos("pedidos"));
-	    
+		PedidoModel pedidoModel = createModelWithId(pedido.getCodigo(), pedido);
+		modelMapper.map(pedido, pedidoModel);
+
+		if (algaSecurity.podePesquisarPedidos()) {
+			pedidoModel.add(algaLinks.linkToPedidos("pedidos"));
+		}
+
 		if (algaSecurity.podeGerenciarPedidos(pedido.getCodigo())) {
 			if (pedido.podeSerConfirmado()) {
 				pedidoModel.add(algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
 			}
-			
+
 			if (pedido.podeSerCancelado()) {
 				pedidoModel.add(algaLinks.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));
 			}
-			
+
 			if (pedido.podeSerEntregue()) {
 				pedidoModel.add(algaLinks.linkToEntregaPedido(pedido.getCodigo(), "entregar"));
 			}
 		}
-	    
-	    pedidoModel.getRestaurante().add(
-	            algaLinks.linkToRestaurante(pedido.getRestaurante().getId()));
-	    
-	    pedidoModel.getCliente().add(
-	            algaLinks.linkToUsuario(pedido.getCliente().getId()));
-	    
-	    pedidoModel.getFormaPagamento().add(
-	            algaLinks.linkToFormaPagamento(pedido.getFormaPagamento().getId()));
-	    
-	    pedidoModel.getEnderecoEntrega().getCidade().add(
-	            algaLinks.linkToCidade(pedido.getEnderecoEntrega().getCidade().getId()));
-	    
-	    pedidoModel.getItens().forEach(item -> {
-	        item.add(algaLinks.linkToProduto(
-	                pedidoModel.getRestaurante().getId(), item.getProdutoId(), "produto"));
-	    });
-	    
-	    return pedidoModel;
+
+		if (algaSecurity.podeConsultarRestaurantes()) {
+			pedidoModel.getRestaurante().add(algaLinks.linkToRestaurante(pedido.getRestaurante().getId()));
+		}
+
+		if (algaSecurity.podeConsultarUsuariosGruposPermissoes()) {
+			pedidoModel.getCliente().add(algaLinks.linkToUsuario(pedido.getCliente().getId()));
+		}
+
+		if (algaSecurity.podeConsultarFormasPagamento()) {
+			pedidoModel.getFormaPagamento().add(algaLinks.linkToFormaPagamento(pedido.getFormaPagamento().getId()));
+		}
+
+		if (algaSecurity.podeConsultarCidades()) {
+			pedidoModel.getEnderecoEntrega().getCidade()
+					.add(algaLinks.linkToCidade(pedido.getEnderecoEntrega().getCidade().getId()));
+		}
+
+		if (algaSecurity.podeConsultarRestaurantes()) {
+			pedidoModel.getItens().forEach(item -> {
+				item.add(algaLinks.linkToProduto(pedidoModel.getRestaurante().getId(), item.getProdutoId(), "produto"));
+			});
+		}
+
+		return pedidoModel;
 	}
 
 }
