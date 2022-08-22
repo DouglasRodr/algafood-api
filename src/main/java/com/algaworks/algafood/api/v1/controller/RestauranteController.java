@@ -28,6 +28,7 @@ import com.algaworks.algafood.api.v1.model.RestauranteBasicoModel;
 import com.algaworks.algafood.api.v1.model.RestauranteModel;
 import com.algaworks.algafood.api.v1.model.input.RestauranteInput;
 import com.algaworks.algafood.api.v1.openapi.controller.RestauranteControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
@@ -58,6 +59,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	private RestauranteApenasNomeModelAssembler restauranteApenasNomeModelAssembler;
 
 	// @JsonView(RestauranteView.Resumo.class)
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<RestauranteBasicoModel> listar() {
@@ -65,17 +67,14 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	}
 
 	//@JsonView(RestauranteView.ApenasNome.class)
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@Override
 	@GetMapping(params = "projecao=apenas-nome", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CollectionModel<RestauranteApenasNomeModel> listarApenasNomes() {
 		return restauranteApenasNomeModelAssembler.toCollectionModel(restauranteRepository.findAll());
 	}
 
-//	@GetMapping
-//	public List<RestauranteModel> listar() {
-//		return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
-//	}
-
+	@CheckSecurity.Restaurantes.PodeConsultar
 	@Override
 	@GetMapping(path = "/{restauranteId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RestauranteModel buscar(@PathVariable Long restauranteId) {
@@ -84,6 +83,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 		return restauranteModelAssembler.toModel(restaurante);
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -97,6 +97,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@Override
 	@PutMapping(path = "/{restauranteId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RestauranteModel atualizar(@PathVariable Long restauranteId,
@@ -112,6 +113,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@Override
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -121,6 +123,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	    return ResponseEntity.noContent().build();
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@Override
 	@DeleteMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -130,6 +133,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	    return ResponseEntity.noContent().build();
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@PutMapping("/ativacoes")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativarMultiplos(@RequestBody List<Long> restauranteIds) {
@@ -140,6 +144,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@DeleteMapping("/ativacoes")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativarMultiplos(@RequestBody List<Long> restauranteIds) {
@@ -150,6 +155,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 		}
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@Override
 	@PutMapping("/{restauranteId}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -159,6 +165,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 	    return ResponseEntity.noContent().build();
 	}
 
+	@CheckSecurity.Restaurantes.PodeEditar
 	@Override
 	@PutMapping("/{restauranteId}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
