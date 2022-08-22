@@ -11,5 +11,15 @@
 			and cozinha.id = :id
         </orm:query>
 	</orm:named-query>
+	
+	<orm:named-query name="Restaurante.existsResponsavel">
+		<orm:query>
+		select case when count(1) > 0 then true else false end
+		from Restaurante rest
+		join rest.responsaveis resp
+		where rest.id = :restauranteId
+		and resp.id = :usuarioId
+		</orm:query>
+	</orm:named-query>
 
 </orm:entity-mappings>
