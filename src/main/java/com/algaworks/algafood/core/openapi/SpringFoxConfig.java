@@ -60,10 +60,14 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseBuilder;
 import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.HttpAuthenticationScheme;
 import springfox.documentation.service.Response;
+import springfox.documentation.service.SecurityReference;
 import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.json.JacksonModuleRegistrar;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -131,6 +135,10 @@ public class SpringFoxConfig {
 				.alternateTypeRules(AlternateTypeRules.newRule(
 						typeResolver.resolve(CollectionModel.class, UsuarioModel.class),
 						UsuariosModelOpenApi.class))
+				
+				.securityContexts(Arrays.asList(securityContext()))
+				.securitySchemes(List.of(authenticationScheme()))
+				.securityContexts(List.of(securityContext()))
 
 				.apiInfo(apiInfoV1())
 				
@@ -146,6 +154,21 @@ public class SpringFoxConfig {
 						new Tag("Estatísticas", "Estatísticas da AlgaFood"),
 						new Tag("Permissões", "Gerencia as permissões"));
 
+	}
+	
+	private SecurityContext securityContext() {
+		return SecurityContext.builder().securityReferences(securityReference()).build();
+	}
+
+	private List<SecurityReference> securityReference() {
+	  AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+	  AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+	  authorizationScopes[0] = authorizationScope;
+	  return List.of(new SecurityReference("Authorization", authorizationScopes));
+	}
+
+	private HttpAuthenticationScheme authenticationScheme() {
+	  return HttpAuthenticationScheme.JWT_BEARER_BUILDER.name("Authorization").build();
 	}
 
 	@Bean
@@ -176,6 +199,11 @@ public class SpringFoxConfig {
 				.alternateTypeRules(AlternateTypeRules.newRule(
 				        typeResolver.resolve(CollectionModel.class, CidadeModelV2.class),
 				        CidadesModelV2OpenApi.class))
+				
+				.securityContexts(Arrays.asList(securityContext()))
+				.securitySchemes(List.of(authenticationScheme()))
+				.securityContexts(List.of(securityContext()))
+				
 				.apiInfo(apiInfoV2())
 				.tags(new Tag("Cidades", "Gerencia as cidades"),
 						new Tag("Cozinhas", "Gerencia as cozinhas"));
