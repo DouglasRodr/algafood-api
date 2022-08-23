@@ -24,6 +24,7 @@ import com.algaworks.algafood.api.v2.assembler.CozinhaModelAssemblerV2;
 import com.algaworks.algafood.api.v2.model.CozinhaModelV2;
 import com.algaworks.algafood.api.v2.model.input.CozinhaInputV2;
 import com.algaworks.algafood.api.v2.openapi.controller.CozinhaControllerV2OpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
@@ -47,6 +48,7 @@ public class CozinhaControllerV2 implements CozinhaControllerV2OpenApi {
 	@Autowired
 	private PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
+	@CheckSecurity.Cozinhas.PodeConsultar
 	@Override
 	@GetMapping
 	public PagedModel<CozinhaModelV2> listar(@PageableDefault(size = 10) Pageable pageable) {
@@ -58,6 +60,7 @@ public class CozinhaControllerV2 implements CozinhaControllerV2OpenApi {
 		return cozinhasPagedModel;
 	}
 
+	@CheckSecurity.Cozinhas.PodeConsultar
 	@Override
 	@GetMapping("/{cozinhaId}")
 	public CozinhaModelV2 buscar(@PathVariable Long cozinhaId) {
@@ -66,6 +69,7 @@ public class CozinhaControllerV2 implements CozinhaControllerV2OpenApi {
 		return cozinhaModelAssembler.toModel(cozinha);
 	}
 
+	@CheckSecurity.Cozinhas.PodeEditar
 	@Override
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -76,6 +80,7 @@ public class CozinhaControllerV2 implements CozinhaControllerV2OpenApi {
 		return cozinhaModelAssembler.toModel(cozinha);
 	}
 
+	@CheckSecurity.Cozinhas.PodeEditar
 	@Override
 	@PutMapping("/{cozinhaId}")
 	public CozinhaModelV2 atualizar(@PathVariable Long cozinhaId, @RequestBody @Valid CozinhaInputV2 cozinhaInput) {
@@ -86,6 +91,7 @@ public class CozinhaControllerV2 implements CozinhaControllerV2OpenApi {
 		return cozinhaModelAssembler.toModel(cozinhaAtual);
 	}
 
+	@CheckSecurity.Cozinhas.PodeEditar
 	@Override
 	@DeleteMapping("/{cozinhaId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)

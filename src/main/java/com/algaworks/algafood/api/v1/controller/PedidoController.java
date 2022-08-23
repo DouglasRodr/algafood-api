@@ -28,6 +28,8 @@ import com.algaworks.algafood.api.v1.model.input.PedidoInput;
 import com.algaworks.algafood.api.v1.openapi.controller.PedidoControllerOpenApi;
 import com.algaworks.algafood.core.data.PageWrapper;
 import com.algaworks.algafood.core.data.PageableTranslator;
+import com.algaworks.algafood.core.security.AlgaSecurity;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.filter.PedidoFilter;
@@ -58,7 +60,11 @@ public class PedidoController implements PedidoControllerOpenApi {
 	
 	@Autowired
 	private PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
+	
+	@Autowired
+	private AlgaSecurity algaSecurity;
 
+	@CheckSecurity.Pedidos.PodePesquisar
 	@Override
 	@GetMapping
 	public PagedModel<PedidoResumoModel> pesquisar(PedidoFilter filtro, 
@@ -73,6 +79,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 		return pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoModelAssembler);
 	}
 
+	@CheckSecurity.Pedidos.PodeBuscar
 	@Override
 	@GetMapping("/{codigoPedido}")
 	public PedidoModel buscar(@PathVariable String codigoPedido) {
@@ -81,6 +88,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 		return pedidoModelAssembler.toModel(pedido);
 	}
 
+	@CheckSecurity.Pedidos.PodeCriar
 	@Override
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -88,9 +96,8 @@ public class PedidoController implements PedidoControllerOpenApi {
 		try {
 			Pedido novoPedido = pedidoInputDisassembler.toDomainObject(pedidoInput);
 
-			// TODO pegar usuário autenticado
 			novoPedido.setCliente(new Usuario());
-			novoPedido.getCliente().setId(1L);
+			novoPedido.getCliente().setId(algaSecurity.getUsuarioId());
 
 			novoPedido = emissaoPedido.emitir(novoPedido);
 
