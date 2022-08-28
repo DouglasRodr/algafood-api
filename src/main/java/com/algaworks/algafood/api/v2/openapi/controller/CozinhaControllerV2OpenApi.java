@@ -6,6 +6,9 @@ import org.springframework.hateoas.PagedModel;
 import com.algaworks.algafood.api.v2.model.CozinhaModelV2;
 import com.algaworks.algafood.api.v2.model.input.CozinhaInputV2;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@SecurityRequirement(name = "security_auth")
 public interface CozinhaControllerV2OpenApi {
 
 	PagedModel<CozinhaModelV2> listar(Pageable pageable);
