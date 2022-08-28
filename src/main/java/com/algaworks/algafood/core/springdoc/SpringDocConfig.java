@@ -1,5 +1,8 @@
 package com.algaworks.algafood.core.springdoc;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +15,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.tags.Tag;
 
 @Configuration
 @SecurityScheme(name = "security_auth",
@@ -39,7 +43,8 @@ public class SpringDocConfig {
 							.license(new License().name("Apache 2.0").url("http://springdoc.com")))
 							.externalDocs(new ExternalDocumentation()
 									.description("AlgaWorks")
-									.url("https://algaworks.com"));
+									.url("https://algaworks.com"))
+							.tags(tags());
 				}).build();
 	}
 
@@ -56,8 +61,13 @@ public class SpringDocConfig {
 							.license(new License().name("Apache 2.0").url("http://springdoc.com")))
 							.externalDocs(new ExternalDocumentation()
 									.description("AlgaWorks")
-									.url("https://algaworks.com"));
+									.url("https://algaworks.com"))
+							.tags(tags());
 				}).build();
+	}
+	
+	private List<Tag> tags() {
+		return Arrays.asList(new Tag().name("Cidades").description("Gerencia as cidades"));
 	}
 
 }
