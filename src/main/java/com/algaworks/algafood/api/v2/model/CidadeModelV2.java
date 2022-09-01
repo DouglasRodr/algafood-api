@@ -10,6 +10,7 @@ import lombok.Setter;
 @Relation(collectionRelation = "cidades")
 @Setter
 @Getter
+@Schema(name = "CidadeModel")
 public class CidadeModelV2 extends RepresentationModel<CidadeModelV2> {
 
 	@Schema(example = "1")

@@ -21,11 +21,15 @@ public interface CidadeControllerOpenApi {
 	@Operation(summary = "Lista as cidades")
 	CollectionModel<CidadeModel> listar();
 
-	@Operation(summary = "Busca uma cidade por Id", responses = {
-			@ApiResponse(responseCode = "200"),
-			@ApiResponse(responseCode = "400", description = "ID da cidade inválido",
-					content = @Content(schema = @Schema(ref = "Problema"))
-			)
+	@Operation(summary = "Busca uma cidade por Id",
+			responses = {
+				@ApiResponse(responseCode = "200"),
+				@ApiResponse(responseCode = "400", description = "ID da cidade inválido",
+						content = @Content(schema = @Schema(ref = "Problema"))
+				),
+				@ApiResponse(responseCode = "404", description = "Cidade não encontrada",
+						content = @Content(schema = @Schema(ref = "Problema"))
+				)
 	})
 	CidadeModel buscar(@Parameter(description = "ID de uma cidade", example = "1", required = true) Long cidadeId);
 
