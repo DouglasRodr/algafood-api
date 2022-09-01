@@ -7,7 +7,10 @@ import com.algaworks.algafood.api.v2.model.input.CidadeInputV2;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -18,7 +21,12 @@ public interface CidadeControllerV2OpenApi {
 	@Operation(summary = "Lista as cidades")
 	CollectionModel<CidadeModelV2> listar();
 
-	@Operation(summary = "Busca uma cidade por Id")
+	@Operation(summary = "Busca uma cidade por Id", responses = {
+			@ApiResponse(responseCode = "200"),
+			@ApiResponse(responseCode = "400", description = "ID da cidade inválido",
+					content = @Content(schema = @Schema(ref = "Problema"))
+			)
+	})
 	CidadeModelV2 buscar(@Parameter(description = "ID de uma cidade", example = "1", required = true) Long cidadeId);
 
 	@Operation(summary = "Cadastra uma cidade", description = "Cadastro de uma cidade, "
