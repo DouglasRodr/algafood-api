@@ -38,11 +38,29 @@ public interface CidadeControllerV2OpenApi {
 	CidadeModelV2 adicionar(
 			@RequestBody(description = "Representação de uma nova cidade", required = true) CidadeInputV2 cidadeInput);
 
-	@Operation(summary = "Atualizado uma cidade por ID")
+	@Operation(summary = "Atualizado uma cidade por ID",
+			responses = {
+					@ApiResponse(responseCode = "200"),
+					@ApiResponse(responseCode = "400", description = "ID da cidade inválido",
+							content = @Content(schema = @Schema(ref = "Problema"))
+					),
+					@ApiResponse(responseCode = "404", description = "Cidade não encontrada",
+							content = @Content(schema = @Schema(ref = "Problema"))
+					)
+		})
 	CidadeModelV2 atualizar(@Parameter(description = "ID de uma cidade", example = "1", required = true) Long cidadeId,
 			@RequestBody(description = "Representação de uma cidade com dados atualizados", required = true) CidadeInputV2 cidadeInput);
 
-	@Operation(summary = "Excluir uma cidade por ID")
+	@Operation(summary = "Excluir uma cidade por ID",
+			responses = {
+					@ApiResponse(responseCode = "204"),
+					@ApiResponse(responseCode = "400", description = "ID da cidade inválido",
+							content = @Content(schema = @Schema(ref = "Problema"))
+					),
+					@ApiResponse(responseCode = "404", description = "Cidade não encontrada",
+							content = @Content(schema = @Schema(ref = "Problema"))
+					)
+		})
 	void remover(@Parameter(description = "ID de uma cidade", example = "1", required = true) Long cidadeId);
 
 }

@@ -14,8 +14,10 @@ import org.springframework.context.annotation.Configuration;
 import com.algaworks.algafood.api.exceptionhandler.Problem;
 import com.algaworks.algafood.api.v1.model.CidadeModel;
 import com.algaworks.algafood.api.v1.model.EstadoModel;
+import com.algaworks.algafood.api.v1.model.GrupoModel;
 import com.algaworks.algafood.api.v1.model.input.CidadeInput;
 import com.algaworks.algafood.api.v1.model.input.EstadoIdInput;
+import com.algaworks.algafood.api.v1.model.input.GrupoInput;
 import com.algaworks.algafood.api.v2.model.CidadeModelV2;
 import com.algaworks.algafood.api.v2.model.input.CidadeInputV2;
 
@@ -132,7 +134,8 @@ public class SpringDocConfig {
 	}
 	
 	private List<Tag> tags() {
-		return Arrays.asList(new Tag().name("Cidades").description("Gerencia as cidades"));
+		return Arrays.asList(new Tag().name("Cidades").description("Gerencia as cidades"),
+				new Tag().name("Grupos").description("Gerencia os grupos"));
 	}
 	
     private Map<String, Schema> gerarSchemasV1() {
@@ -144,11 +147,17 @@ public class SpringDocConfig {
         Map<String, Schema> estadoModelSchema = ModelConverters.getInstance().read(EstadoModel.class);
         Map<String, Schema> estadoIdInputSchema = ModelConverters.getInstance().read(EstadoIdInput.class);
         
+        Map<String, Schema> grupoModelSchema = ModelConverters.getInstance().read(GrupoModel.class);
+        Map<String, Schema> grupoInputSchema = ModelConverters.getInstance().read(GrupoInput.class);
+        
         schemaMap.putAll(cidadeModelSchema);
         schemaMap.putAll(cidadeInputSchema);
         
         schemaMap.putAll(estadoModelSchema);
         schemaMap.putAll(estadoIdInputSchema);
+        
+        schemaMap.putAll(grupoModelSchema);
+        schemaMap.putAll(grupoInputSchema);
         
         schemaMap.putAll(gerarSchemasProblema());
 
