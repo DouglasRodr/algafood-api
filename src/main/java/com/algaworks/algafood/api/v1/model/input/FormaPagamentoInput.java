@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@Schema(name = "FormaPagamentoInput")
+@Schema
 public class FormaPagamentoInput {
 
 	@NotBlank

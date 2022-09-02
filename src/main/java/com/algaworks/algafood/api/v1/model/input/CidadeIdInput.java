@@ -8,6 +8,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
+@Schema
 public class CidadeIdInput {
 
 	@Schema(example = "1")

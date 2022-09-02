@@ -67,7 +67,7 @@ public class SpringDocConfig {
 									.url("https://algaworks.com"))
 							.tags(tags())
 							.components(new Components()
-			                        .schemas(gerarSchemas())
+			                        .schemas(gerarSchemasV1())
 			                        .responses(gerarResponses())
 			                );
 					addGlobalResponses(openApi);
@@ -90,11 +90,19 @@ public class SpringDocConfig {
 									.url("https://algaworks.com"))
 							.tags(tags())
 							.components(new Components()
-									.schemas(gerarSchemas())
+									.schemas(gerarSchemasV2())
 			                        .responses(gerarResponses())
 			                );			
 					addGlobalResponses(openApi);				
 				}).build();
+	}
+	
+	private List<Tag> tags() {
+		return Arrays.asList(new Tag().name("Cidades").description("Gerencia as cidades"),
+				new Tag().name("Grupos").description("Gerencia os grupos"),
+				new Tag().name("Cozinhas").description("Gerencia as cozinhas"),
+				new Tag().name("Formas de pagamento").description("Gerencia as formas de pagamento"),
+				new Tag().name("Pedidos").description("Gerencia os pedidos"));
 	}
 	
 	private void addGlobalResponses(OpenAPI openApi) {
@@ -127,21 +135,44 @@ public class SpringDocConfig {
          );
 	}
 	
-	private List<Tag> tags() {
-		return Arrays.asList(new Tag().name("Cidades").description("Gerencia as cidades"),
-				new Tag().name("Grupos").description("Gerencia os grupos"),
-				new Tag().name("Cozinhas").description("Gerencia as cozinhas"),
-				new Tag().name("Formas de pagamento").description("Gerencia as formas de pagamento"));
+	private Map<String, Schema> gerarSchemasV1() {
+		final Map<String, Schema> schemaMap = new HashMap<>();
+		
+		schemaMap.putAll(gerarSchemas("com.algaworks.algafood.api.v1"));
+		schemaMap.putAll(gerarSchemasProblema());
+		
+		return schemaMap;
+	}
+	
+	private Map<String, Schema> gerarSchemasV2() {
+		final Map<String, Schema> schemaMap = new HashMap<>();
+		
+		schemaMap.putAll(gerarSchemas("com.algaworks.algafood.api.v2"));
+		schemaMap.putAll(gerarSchemasProblema());
+		
+		return schemaMap;
 	}
     
-    private Map<String, Schema> gerarSchemas() {
+    private Map<String, Schema> gerarSchemas(String packageName) {
         final Map<String, Schema> schemaMap = new HashMap<>();
         
-        Reflections reflections = new Reflections("com.algaworks.algafood.api", Scanners.TypesAnnotated);
+        Reflections reflections = new Reflections(packageName, Scanners.TypesAnnotated);
         reflections.getTypesAnnotatedWith(io.swagger.v3.oas.annotations.media.Schema.class)
         	.forEach((clazz) -> {
         		schemaMap.putAll(ModelConverters.getInstance().read(clazz));
         	});
+
+        return schemaMap;
+    }
+    
+    private Map<String, Schema> gerarSchemasProblema() {
+        final Map<String, Schema> schemaMap = new HashMap<>();
+
+        Map<String, Schema> problemSchema = ModelConverters.getInstance().read(Problem.class);
+        Map<String, Schema> problemObjectSchema = ModelConverters.getInstance().read(Problem.Object.class);
+
+        schemaMap.putAll(problemSchema);
+        schemaMap.putAll(problemObjectSchema);
 
         return schemaMap;
     }

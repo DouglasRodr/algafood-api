@@ -8,6 +8,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
+@Schema
 public class CozinhaInput {
 
 	@Schema(example = "Brasileira")

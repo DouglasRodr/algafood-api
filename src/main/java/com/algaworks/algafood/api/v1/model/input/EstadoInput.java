@@ -8,6 +8,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
+@Schema
 public class EstadoInput {
 
 	@Schema(example = "Minas Gerais")
