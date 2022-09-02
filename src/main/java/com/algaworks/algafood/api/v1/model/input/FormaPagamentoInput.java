@@ -2,14 +2,17 @@ package com.algaworks.algafood.api.v1.model.input;
 
 import javax.validation.constraints.NotBlank;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
+@Schema(name = "FormaPagamentoInput")
 public class FormaPagamentoInput {
 
 	@NotBlank
+	@Schema(example = "Cartão de crédito")
 	private String descricao;
     
 }
