@@ -25,6 +25,7 @@
 		<spring-security-jwt.version>1.0.11.RELEASE</spring-security-jwt.version>
 		<dockerfile-maven-version>1.4.13</dockerfile-maven-version>
 		<springdoc.version>1.6.9</springdoc.version>
+		<reflections.version>0.10.2</reflections.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -176,6 +177,11 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-security</artifactId>
 			<version>${springdoc.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.reflections</groupId>
+		    <artifactId>reflections</artifactId> 
+		    <version>${reflections.version}</version>
 		</dependency>
 	</dependencies>
 

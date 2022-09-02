@@ -60,6 +60,6 @@ public interface GrupoControllerOpenApi {
 							content = @Content(schema = @Schema(ref = "Problema"))
 					)
 		})
-	void remover(Long grupoId);
+	void remover(@Parameter(description = "ID de um grupo") Long grupoId);
 
 }

@@ -7,19 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.algaworks.algafood.api.exceptionhandler.Problem;
-import com.algaworks.algafood.api.v1.model.CidadeModel;
-import com.algaworks.algafood.api.v1.model.EstadoModel;
-import com.algaworks.algafood.api.v1.model.GrupoModel;
-import com.algaworks.algafood.api.v1.model.input.CidadeInput;
-import com.algaworks.algafood.api.v1.model.input.EstadoIdInput;
-import com.algaworks.algafood.api.v1.model.input.GrupoInput;
-import com.algaworks.algafood.api.v2.model.CidadeModelV2;
-import com.algaworks.algafood.api.v2.model.input.CidadeInputV2;
 
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -73,7 +67,7 @@ public class SpringDocConfig {
 									.url("https://algaworks.com"))
 							.tags(tags())
 							.components(new Components()
-			                        .schemas(gerarSchemasV1())
+			                        .schemas(gerarSchemas())
 			                        .responses(gerarResponses())
 			                );
 					addGlobalResponses(openApi);
@@ -96,7 +90,7 @@ public class SpringDocConfig {
 									.url("https://algaworks.com"))
 							.tags(tags())
 							.components(new Components()
-									.schemas(gerarSchemasV2())
+									.schemas(gerarSchemas())
 			                        .responses(gerarResponses())
 			                );			
 					addGlobalResponses(openApi);				
@@ -135,57 +129,18 @@ public class SpringDocConfig {
 	
 	private List<Tag> tags() {
 		return Arrays.asList(new Tag().name("Cidades").description("Gerencia as cidades"),
-				new Tag().name("Grupos").description("Gerencia os grupos"));
+				new Tag().name("Grupos").description("Gerencia os grupos"),
+				new Tag().name("Cozinhas").description("Gerencia as cozinhas"));
 	}
-	
-    private Map<String, Schema> gerarSchemasV1() {
-        final Map<String, Schema> schemaMap = new HashMap<>();
-        
-        Map<String, Schema> cidadeModelSchema = ModelConverters.getInstance().read(CidadeModel.class);
-        Map<String, Schema> cidadeInputSchema = ModelConverters.getInstance().read(CidadeInput.class);
-        
-        Map<String, Schema> estadoModelSchema = ModelConverters.getInstance().read(EstadoModel.class);
-        Map<String, Schema> estadoIdInputSchema = ModelConverters.getInstance().read(EstadoIdInput.class);
-        
-        Map<String, Schema> grupoModelSchema = ModelConverters.getInstance().read(GrupoModel.class);
-        Map<String, Schema> grupoInputSchema = ModelConverters.getInstance().read(GrupoInput.class);
-        
-        schemaMap.putAll(cidadeModelSchema);
-        schemaMap.putAll(cidadeInputSchema);
-        
-        schemaMap.putAll(estadoModelSchema);
-        schemaMap.putAll(estadoIdInputSchema);
-        
-        schemaMap.putAll(grupoModelSchema);
-        schemaMap.putAll(grupoInputSchema);
-        
-        schemaMap.putAll(gerarSchemasProblema());
-
-        return schemaMap;
-    }
     
-    private Map<String, Schema> gerarSchemasV2() {
+    private Map<String, Schema> gerarSchemas() {
         final Map<String, Schema> schemaMap = new HashMap<>();
         
-        Map<String, Schema> cidadeModelSchema = ModelConverters.getInstance().read(CidadeModelV2.class);
-        Map<String, Schema> cidadeInputSchema = ModelConverters.getInstance().read(CidadeInputV2.class);
-        
-        schemaMap.putAll(cidadeModelSchema);
-        schemaMap.putAll(cidadeInputSchema);
-        
-        schemaMap.putAll(gerarSchemasProblema());
-
-        return schemaMap;
-    }
-    
-    private Map<String, Schema> gerarSchemasProblema() {
-        final Map<String, Schema> schemaMap = new HashMap<>();
-
-        Map<String, Schema> problemSchema = ModelConverters.getInstance().read(Problem.class);
-        Map<String, Schema> problemObjectSchema = ModelConverters.getInstance().read(Problem.Object.class);
-
-        schemaMap.putAll(problemSchema);
-        schemaMap.putAll(problemObjectSchema);
+        Reflections reflections = new Reflections("com.algaworks.algafood.api", Scanners.TypesAnnotated);
+        reflections.getTypesAnnotatedWith(io.swagger.v3.oas.annotations.media.Schema.class)
+        	.forEach((clazz) -> {
+        		schemaMap.putAll(ModelConverters.getInstance().read(clazz));
+        	});
 
         return schemaMap;
     }
