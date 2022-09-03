@@ -33,7 +33,7 @@ public interface RestauranteProdutoFotoControllerOpenApi {
 			@ApiResponse(responseCode = "404", description = "Foto de produto não encontrada", content = {
 					@Content(schema = @Schema(ref = "Problema")) }),
 	})
-	ResponseEntity<Void> excluir(Long restauranteId,Long produtoId);
+	void excluir(Long restauranteId,Long produtoId);
 
 	@Operation(summary = "Busca a foto do produto de um restaurante", responses = {
 			@ApiResponse(responseCode = "200", content = {
