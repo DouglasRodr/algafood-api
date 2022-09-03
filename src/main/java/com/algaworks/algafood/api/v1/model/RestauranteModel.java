@@ -25,8 +25,10 @@ public class RestauranteModel extends RepresentationModel<RestauranteModel> {
 
 	private CozinhaModel cozinha;
 
+	@Schema(example = "true")
 	private Boolean ativo;
 	
+	@Schema(example = "true")
 	private Boolean aberto;
 	
 	private EnderecoModel endereco;

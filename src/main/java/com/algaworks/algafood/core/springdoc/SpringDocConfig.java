@@ -1,6 +1,17 @@
 package com.algaworks.algafood.core.springdoc;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.algaworks.algafood.api.exceptionhandler.Problem;
+
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.OAuthFlow;
@@ -18,15 +29,6 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.tags.Tag;
-import org.springdoc.core.customizers.OpenApiCustomiser;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Configuration
 @SecurityScheme(name = "security_auth",
@@ -67,7 +69,8 @@ public class SpringDocConfig {
                         new Tag().name("Formas de pagamento").description("Gerencia as formas de pagamento"),
                         new Tag().name("Pedidos").description("Gerencia os pedidos"),
                         new Tag().name("Restaurantes").description("Gerencia os restaurantes"),
-                        new Tag().name("Estados").description("Gerencia os estados")
+                        new Tag().name("Estados").description("Gerencia os estados"),
+                        new Tag().name("Produtos").description("Gerencia os produtos")
                 )).components(new Components()
                         .schemas(gerarSchemas())
                         .responses(gerarResponses())
