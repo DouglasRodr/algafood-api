@@ -9,21 +9,22 @@ import org.springframework.web.multipart.MultipartFile;
 import com.algaworks.algafood.core.validation.FileContentType;
 import com.algaworks.algafood.core.validation.FileSize;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Schema
 public class FotoProdutoInput {
 
-	@ApiModelProperty(hidden = true)
+	@Schema(description = "Arquivo da foto do produto (máximo 500KB, apenas JPG e PNG)")
 	@NotNull
 	@FileSize(max = "500KB")
 	@FileContentType(allowed = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
 	private MultipartFile arquivo;
 
-	@ApiModelProperty(value = "Descrição da foto do produto", required = true)
+	@Schema(description = "Descrição da foto do produto")
 	@NotBlank
 	private String descricao;
 
