@@ -10,7 +10,6 @@ import lombok.Setter;
 @Relation(collectionRelation = "restaurantes")
 @Setter
 @Getter
-@Schema
 public class RestauranteApenasNomeModel extends RepresentationModel<RestauranteApenasNomeModel> {
 
 	@Schema(example = "1")

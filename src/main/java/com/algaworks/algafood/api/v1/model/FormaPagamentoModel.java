@@ -10,7 +10,6 @@ import lombok.Setter;
 @Relation(collectionRelation = "formasPagamento")
 @Setter
 @Getter
-@Schema
 public class FormaPagamentoModel extends RepresentationModel<FormaPagamentoModel> {
 
 	@Schema(example = "1")

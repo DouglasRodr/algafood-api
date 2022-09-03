@@ -10,7 +10,6 @@ import lombok.Setter;
 @Relation(collectionRelation = "estados")
 @Setter
 @Getter
-@Schema
 public class EstadoModel extends RepresentationModel<EstadoModel> {
 
 	@Schema(example = "1")

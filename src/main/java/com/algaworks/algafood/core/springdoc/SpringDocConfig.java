@@ -1,20 +1,6 @@
 package com.algaworks.algafood.core.springdoc;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
-import org.springdoc.core.GroupedOpenApi;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.algaworks.algafood.api.exceptionhandler.Problem;
-
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.OAuthFlow;
@@ -32,6 +18,15 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.tags.Tag;
+import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Configuration
 @SecurityScheme(name = "security_auth",
@@ -45,128 +40,74 @@ import io.swagger.v3.oas.models.tags.Tag;
                 }
         )))
 public class SpringDocConfig {
-	
+
     private static final String badRequestResponse = "BadRequestResponse";
     private static final String notFoundResponse = "NotFoundResponse";
     private static final String notAcceptableResponse = "NotAcceptableResponse";
     private static final String internalServerErrorResponse = "InternalServerErrorResponse";
 
-	@Bean
-	public GroupedOpenApi groupedOpenApiv1() {
-		return GroupedOpenApi.builder()
-				.group("AlgaFood API v1")
-				.packagesToScan("com.algaworks.algafood.api")
-				.pathsToMatch("/v1/**")
-				.addOpenApiCustomiser(openApi -> {
-					openApi.info(new Info().title("AlgaFood API v1")
-							.version("v1")
-							.description("REST API do AlgaFood")
-							.license(new License().name("Apache 2.0").url("http://springdoc.com")))
-							.externalDocs(new ExternalDocumentation()
-									.description("AlgaWorks")
-									.url("https://algaworks.com"))
-							.tags(tags())
-							.components(new Components()
-			                        .schemas(gerarSchemasV1())
-			                        .responses(gerarResponses())
-			                );
-					addGlobalResponses(openApi);
-				}).build();
-	}
-
-	@Bean
-	public GroupedOpenApi groupedOpenApiv2() {
-		return GroupedOpenApi.builder()
-				.group("AlgaFood API v2")
-				.packagesToScan("com.algaworks.algafood.api")
-				.pathsToMatch("/v2/**")
-				.addOpenApiCustomiser(openApi -> {
-					openApi.info(new Info().title("AlgaFood API v2")
-							.version("v2")
-							.description("REST API do AlgaFood")
-							.license(new License().name("Apache 2.0").url("http://springdoc.com")))
-							.externalDocs(new ExternalDocumentation()
-							.description("AlgaWorks")
-									.url("https://algaworks.com"))
-							.tags(tags())
-							.components(new Components()
-									.schemas(gerarSchemasV2())
-			                        .responses(gerarResponses())
-			                );			
-					addGlobalResponses(openApi);				
-				}).build();
-	}
-	
-	private List<Tag> tags() {
-		return Arrays.asList(new Tag().name("Cidades").description("Gerencia as cidades"),
-				new Tag().name("Grupos").description("Gerencia os grupos"),
-				new Tag().name("Cozinhas").description("Gerencia as cozinhas"),
-				new Tag().name("Formas de pagamento").description("Gerencia as formas de pagamento"),
-				new Tag().name("Pedidos").description("Gerencia os pedidos"),
-	            new Tag().name("Restaurantes").description("Gerencia os restaurantes"));
-	}
-	
-	private void addGlobalResponses(OpenAPI openApi) {
-		openApi.getPaths()
-		 .values()
-         .forEach(pathItem -> pathItem.readOperationsMap()
-	         .forEach((httpMethod, operation) -> {
-	             ApiResponses responses = operation.getResponses();
-                 switch (httpMethod) {
-	                 case GET:
-	                     responses.addApiResponse("406", new ApiResponse().$ref(notAcceptableResponse));
-	                     responses.addApiResponse("500", new ApiResponse().$ref(internalServerErrorResponse));
-	                     break;
-	                 case POST:
-	                     responses.addApiResponse("400", new ApiResponse().$ref(badRequestResponse));
-	                     responses.addApiResponse("500", new ApiResponse().$ref(internalServerErrorResponse));
-	                     break;
-	                 case PUT:
-	                     responses.addApiResponse("400", new ApiResponse().$ref(badRequestResponse));
-	                     responses.addApiResponse("500", new ApiResponse().$ref(internalServerErrorResponse));
-	                     break;
-	                 case DELETE:
-	                     responses.addApiResponse("500", new ApiResponse().$ref(internalServerErrorResponse));
-	                     break;
-	                 default:
-	                     responses.addApiResponse("500", new ApiResponse().$ref(internalServerErrorResponse));
-	                     break;
-	             }
-	         })
-         );
-	}
-	
-	private Map<String, Schema> gerarSchemasV1() {
-		final Map<String, Schema> schemaMap = new HashMap<>();
-		
-		schemaMap.putAll(gerarSchemas("com.algaworks.algafood.api.v1"));
-		schemaMap.putAll(gerarSchemasProblema());
-		
-		return schemaMap;
-	}
-	
-	private Map<String, Schema> gerarSchemasV2() {
-		final Map<String, Schema> schemaMap = new HashMap<>();
-		
-		schemaMap.putAll(gerarSchemas("com.algaworks.algafood.api.v2"));
-		schemaMap.putAll(gerarSchemasProblema());
-		
-		return schemaMap;
-	}
-    
-    private Map<String, Schema> gerarSchemas(String packageName) {
-        final Map<String, Schema> schemaMap = new HashMap<>();
-        
-        Reflections reflections = new Reflections(packageName, Scanners.TypesAnnotated);
-        reflections.getTypesAnnotatedWith(io.swagger.v3.oas.annotations.media.Schema.class)
-        	.forEach((clazz) -> {
-        		schemaMap.putAll(ModelConverters.getInstance().read(clazz));
-        	});
-
-        return schemaMap;
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("AlgaFood API")
+                        .version("v1")
+                        .description("REST API do AlgaFood")
+                        .license(new License()
+                                .name("Apache 2.0")
+                                .url("http://springdoc.com")
+                        )
+                ).externalDocs(new ExternalDocumentation()
+                        .description("AlgaWorks")
+                        .url("https://algaworks.com")
+                ).tags(Arrays.asList(
+                        new Tag().name("Cidades").description("Gerencia as cidades"),
+                        new Tag().name("Grupos").description("Gerencia os grupos"),
+                        new Tag().name("Cozinhas").description("Gerencia as cozinhas"),
+                        new Tag().name("Formas de pagamento").description("Gerencia as formas de pagamento"),
+                        new Tag().name("Pedidos").description("Gerencia os pedidos"),
+                        new Tag().name("Restaurantes").description("Gerencia os restaurantes"),
+                        new Tag().name("Estados").description("Gerencia os estados")
+                )).components(new Components()
+                        .schemas(gerarSchemas())
+                        .responses(gerarResponses())
+                );
     }
-    
-    private Map<String, Schema> gerarSchemasProblema() {
+
+    @Bean
+    public OpenApiCustomiser openApiCustomiser() {
+        return openApi -> {
+            openApi.getPaths()
+                    .values()
+                    .forEach(pathItem -> pathItem.readOperationsMap()
+                            .forEach((httpMethod, operation) -> {
+                                ApiResponses responses = operation.getResponses();
+                                switch (httpMethod) {
+	       		                 case GET:
+	    		                     responses.addApiResponse("406", new ApiResponse().$ref(notAcceptableResponse));
+	    		                     responses.addApiResponse("500", new ApiResponse().$ref(internalServerErrorResponse));
+	    		                     break;
+	    		                 case POST:
+	    		                     responses.addApiResponse("400", new ApiResponse().$ref(badRequestResponse));
+	    		                     responses.addApiResponse("500", new ApiResponse().$ref(internalServerErrorResponse));
+	    		                     break;
+	    		                 case PUT:
+	    		                     responses.addApiResponse("400", new ApiResponse().$ref(badRequestResponse));
+	    		                     responses.addApiResponse("500", new ApiResponse().$ref(internalServerErrorResponse));
+	    		                     break;
+	    		                 case DELETE:
+	    		                     responses.addApiResponse("500", new ApiResponse().$ref(internalServerErrorResponse));
+	    		                     break;
+	    		                 default:
+	    		                     responses.addApiResponse("500", new ApiResponse().$ref(internalServerErrorResponse));
+	    		                     break;
+                                }
+                            })
+                    );
+        };
+    }
+
+    private Map<String, Schema> gerarSchemas() {
         final Map<String, Schema> schemaMap = new HashMap<>();
 
         Map<String, Schema> problemSchema = ModelConverters.getInstance().read(Problem.class);
@@ -177,7 +118,7 @@ public class SpringDocConfig {
 
         return schemaMap;
     }
-    
+
     private Map<String, ApiResponse> gerarResponses() {
         final Map<String, ApiResponse> apiResponseMap = new HashMap<>();
 
@@ -203,5 +144,5 @@ public class SpringDocConfig {
 
         return apiResponseMap;
     }
-	
+
 }

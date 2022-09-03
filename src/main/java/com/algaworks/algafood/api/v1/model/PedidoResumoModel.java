@@ -14,7 +14,6 @@ import lombok.Setter;
 @Relation(collectionRelation = "pedidos")
 @Setter
 @Getter
-@Schema
 public class PedidoResumoModel extends RepresentationModel<PedidoResumoModel> {
 
 	@Schema(example = "04813f77-79b5-11ec-9a17-0242ac1b0002")

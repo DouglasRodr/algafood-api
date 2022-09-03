@@ -10,7 +10,6 @@ import lombok.Setter;
 @Relation(collectionRelation = "usuarios")
 @Setter
 @Getter
-@Schema
 public class UsuarioModel extends RepresentationModel<UsuarioModel> {
 
 	@Schema(example = "1")

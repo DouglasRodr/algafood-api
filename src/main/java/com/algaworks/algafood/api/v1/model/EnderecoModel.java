@@ -6,7 +6,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@Schema
 public class EnderecoModel {
 
 	@Schema(example = "38400-000")

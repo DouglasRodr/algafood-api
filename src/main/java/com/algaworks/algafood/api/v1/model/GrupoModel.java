@@ -10,7 +10,6 @@ import lombok.Setter;
 @Relation(collectionRelation = "grupos")
 @Setter
 @Getter
-@Schema
 public class GrupoModel extends RepresentationModel<GrupoModel> {
 
 	@Schema(example = "1")
