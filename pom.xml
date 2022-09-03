@@ -22,7 +22,8 @@
 		<aws-java-sdk-s3.version>1.12.204</aws-java-sdk-s3.version>
 		<logback-ext-loggly.version>0.1.5</logback-ext-loggly.version>
 		<dockerfile-maven-version>1.4.13</dockerfile-maven-version>
-		<springdoc.version>1.6.9</springdoc.version>
+		<springdoc.version>1.6.9</springdoc.version>		
+		<springauthserver.version>0.3.1</springauthserver.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -126,6 +127,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-authorization-server</artifactId>
+			<version>${springauthserver.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
